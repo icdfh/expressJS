@@ -1,5 +1,5 @@
 import './App.css'
-
+import Login from './Login'
 
 
 function Header() {
@@ -18,7 +18,7 @@ function Header() {
         <a href="">Contact</a>
     </div>
     <div className='button'>
-        <button>LOGIN</button>
+        <Login/>
     </div>
     </div>
    
