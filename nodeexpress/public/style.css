@@ -1,0 +1,119 @@
+/* ====== БАЗА ====== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Inter", Arial, sans-serif;
+    background: #f1f4f9;
+    color: #1e1e1e;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+}
+
+/* ====== КАРТОЧКА (контейнер) ====== */
+.container {
+    width: 100%;
+    max-width: 480px;
+    background: #ffffff;
+    padding: 32px;
+    border-radius: 18px;
+    box-shadow:
+        0 4px 15px rgba(0,0,0,0.05),
+        0 1px 3px rgba(0,0,0,0.1);
+    animation: fade 0.3s ease;
+}
+
+@keyframes fade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    letter-spacing: -0.5px;
+}
+
+/* ====== INPUTS ====== */
+input {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: 1.5px solid #d0d7e5;
+    background: #f9fafc;
+    transition: 0.2s;
+}
+
+input:focus {
+    border-color: #4e73df;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(78,115,223,0.25);
+    outline: none;
+}
+
+/* ====== BUTTONS ====== */
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 5px;
+    background: #4e73df;
+    color: white;
+    font-size: 17px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #3b5bb3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(78,115,223,0.3);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* ====== КАРТОЧКА КНИГ ====== */
+.book {
+    background: #ffffff;
+    padding: 18px;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    border: 1px solid #e5e9f2;
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,0.05),
+        0 1px 2px rgba(0,0,0,0.08);
+}
+
+.book h3 {
+    font-size: 20px;
+    margin-bottom: 6px;
+}
+
+.book p {
+    font-size: 16px;
+    color: #637381;
+}
+
+/* ====== LINKS AS BUTTONS ====== */
+a button {
+    margin-top: 10px;
+}
+
+/* ====== PROFILE TEXT ====== */
+.info {
+    font-size: 18px;
+    margin-bottom: 12px;
+}
