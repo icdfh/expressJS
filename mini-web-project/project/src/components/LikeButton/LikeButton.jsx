@@ -1,11 +1,14 @@
+import styles from "./LikeButton.module.css";
 
-function LikeButton({isLiked, likesCount, onToggle}) {
-
+function LikeButton({ isLiked, likesCount, onToggle }) {
   return (
-    <>
-     <button onClick={onToggle}>{isLiked ? "❤": "🤍"}{likesCount}</button>
-    </>
-  )
+    <button
+      className={`${styles.button} ${isLiked ? styles.liked : ""}`}
+      onClick={onToggle}
+    >
+      {isLiked ? "❤" : "🤍"} {likesCount}
+    </button>
+  );
 }
 
-export default LikeButton
+export default LikeButton;

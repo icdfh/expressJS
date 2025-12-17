@@ -1,21 +1,28 @@
+import styles from "./ProductCard.module.css";
 
-function ProductCard({product, onBuy}) {
-
+function ProductCard({ product, onBuy }) {
   return (
-    <>
-        <div>
-            <h3>{product.title}</h3>
-            <p>{product.price}</p>
+    <div className={styles.card}>
+      <h3 className={styles.title}>{product.title}</h3>
+      <p className={styles.price}>${product.price}</p>
 
-            <p>{product.inStock ? "В наличии": "Нет в наличии"}</p>
-            <p>{product.sale ? "Скидка": "Без скидки"}</p>
+      <p className={product.inStock ? styles.inStock : styles.outOfStock}>
+        {product.inStock ? "В наличии" : "Нет в наличии"}
+      </p>
 
-            <button 
-            disabled = {!product.inStock} 
-            onClick={() => onBuy(product.id)}>Купить</button>
-        </div>
-    </>
-  )
+      <p className={product.sale ? styles.sale : styles.noSale}>
+        {product.sale ? "Скидка" : "Без скидки"}
+      </p>
+
+      <button
+        className={styles.button}
+        disabled={!product.inStock}
+        onClick={() => onBuy(product.id)}
+      >
+        Купить
+      </button>
+    </div>
+  );
 }
 
-export default ProductCard
+export default ProductCard;

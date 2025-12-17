@@ -1,15 +1,14 @@
+import styles from "./Search.module.css";
 
-function Search({value, onChange}) {
-
+function Search({ value, onChange }) {
   return (
-    <>
-        <input 
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="Поиск по товарам..."
-        />
-    </>
-  )
+    <input
+      className={styles.input}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder="Поиск по товарам..."
+    />
+  );
 }
 
-export default Search
+export default Search;
