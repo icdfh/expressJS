@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { products as initialProducts } from "./data/products";
+import { useState, useMemo, useEffect } from "react";
+import { fetchProducts } from "./data/products";
 
 import Tabs from "./components/Tabs/Tabs";
 import Modal from "./components/Modal/Modal";
@@ -19,6 +19,9 @@ function App() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
 
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   function openModal() {
     setIsModalOpen(true);
   }
@@ -28,18 +31,17 @@ function App() {
   }
 
   function toggleLikeSafe() {
-    setIsLiked((prevLiked) => {
-      setLikesCount((prevCount) =>
-        prevLiked ? prevCount - 1 : prevCount + 1
-      );
-      return !prevLiked;
+    setIsLiked((prev) => {
+      setLikesCount((count) => (prev ? count - 1 : count + 1));
+      return !prev;
     });
   }
 
+  // ✅ Фильтрация теперь от products
   const visibleProducts = useMemo(() => {
     const normalized = query.trim().toLowerCase();
 
-    return initialProducts.filter((p) => {
+    return products.filter((p) => {
       const matchesSearch = p.title
         .toLowerCase()
         .includes(normalized);
@@ -51,12 +53,44 @@ function App() {
 
       return matchesSearch && matchesFilter;
     });
-  }, [query, filter]);
+  }, [products, query, filter]);
 
   function buyProduct(productId) {
     console.log("Покупка товара:", productId);
     openModal();
   }
+
+  // ✅ Загрузка товаров
+  useEffect(() => {
+    if (tab !== "shop") return;
+
+    setLoading(true);
+
+    fetchProducts()
+      .then(setProducts)
+      .catch((err) => {
+        console.error("Ошибка загрузки товаров", err);
+      })
+      .finally(() => setLoading(false));
+  }, [tab]);
+
+  // ✅ Восстановление вкладки
+  useEffect(() => {
+    const savedTab = localStorage.getItem("tab");
+    if (savedTab) {
+      setTab(savedTab);
+    }
+  }, []);
+
+  // ✅ Сохранение вкладки
+  useEffect(() => {
+    localStorage.setItem("tab", tab);
+  }, [tab]);
+
+  // ✅ Сохранение лайка
+  useEffect(() => {
+    localStorage.setItem("liked", JSON.stringify(isLiked));
+  }, [isLiked]);
 
   return (
     <div className={styles.app}>
@@ -86,8 +120,10 @@ function App() {
             <button onClick={() => setFilter("sale")}>Со скидкой</button>
           </div>
 
+          {loading && <p>Загрузка...</p>}
+
           <div className={styles.products}>
-            {visibleProducts.length === 0 && (
+            {!loading && visibleProducts.length === 0 && (
               <p className={styles.empty}>Товары не найдены</p>
             )}
 
