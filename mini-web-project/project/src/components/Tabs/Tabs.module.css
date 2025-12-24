@@ -9,6 +9,7 @@
     border-radius: 10px;
     background: white;
     cursor: pointer;
+    color: black;
 }
 .active{
     border-color: #111;
