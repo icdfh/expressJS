@@ -1,158 +1,56 @@
-import { useState, useMemo, useEffect } from "react";
-import { fetchProducts } from "./data/products";
+import { useState } from "react"
+import { Routes, Route, Navigate } from "react-router-dom"
 
-import Tabs from "./components/Tabs/Tabs";
-import Modal from "./components/Modal/Modal";
-import LikeButton from "./components/LikeButton/LikeButton";
-import Search from "./components/Search/Search";
-import ProductCard from "./components/ProductCard/ProductCard";
+import Login from "./pages/Login"
+import Feed from "./pages/Feed"
+import Shop from "./pages/Shop"
+import ProductPages from "./pages/ProductPages"
+import Profile from "./pages/Profile"
 
-import styles from "./App.module.css";
+import ProtectedRoute from "./components/ProtectedRoute"
+import Layout from "./components/Layout"
 
 function App() {
-  const [tab, setTab] = useState("feed");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAuth, setIsAuth] = useState(
+    Boolean(localStorage.getItem("auth"))
+  )
 
-  const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(12);
-
-  const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState("all");
-
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  function openModal() {
-    setIsModalOpen(true);
+  function login() {
+    localStorage.setItem("auth", "true")
+    setIsAuth(true)
   }
 
-  function closeModal() {
-    setIsModalOpen(false);
+  function logout() {
+    localStorage.removeItem("auth")
+    setIsAuth(false)
   }
-
-  function toggleLikeSafe() {
-    setIsLiked((prev) => {
-      setLikesCount((count) => (prev ? count - 1 : count + 1));
-      return !prev;
-    });
-  }
-
-  // ✅ Фильтрация теперь от products
-  const visibleProducts = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-
-    return products.filter((p) => {
-      const matchesSearch = p.title
-        .toLowerCase()
-        .includes(normalized);
-
-      const matchesFilter =
-        filter === "all" ||
-        (filter === "inStock" && p.inStock) ||
-        (filter === "sale" && p.sale);
-
-      return matchesSearch && matchesFilter;
-    });
-  }, [products, query, filter]);
-
-  function buyProduct(productId) {
-    console.log("Покупка товара:", productId);
-    openModal();
-  }
-
-  // ✅ Загрузка товаров
-  useEffect(() => {
-    if (tab !== "shop") return;
-
-    setLoading(true);
-
-    fetchProducts()
-      .then(setProducts)
-      .catch((err) => {
-        console.error("Ошибка загрузки товаров", err);
-      })
-      .finally(() => setLoading(false));
-  }, [tab]);
-
-  // ✅ Восстановление вкладки
-  useEffect(() => {
-    const savedTab = localStorage.getItem("tab");
-    if (savedTab) {
-      setTab(savedTab);
-    }
-  }, []);
-
-  // ✅ Сохранение вкладки
-  useEffect(() => {
-    localStorage.setItem("tab", tab);
-  }, [tab]);
-
-  // ✅ Сохранение лайка
-  useEffect(() => {
-    localStorage.setItem("liked", JSON.stringify(isLiked));
-  }, [isLiked]);
 
   return (
-    <div className={styles.app}>
-      <Tabs value={tab} onChange={setTab} />
+    <Routes>
+      <Route
+        path="/login"
+        element={
+          isAuth ? <Navigate to="/feed" /> : <Login onLogin={login} />
+        }
+      />
 
-      {tab === "feed" && (
-        <section className={styles.section}>
-          <h1 className={styles.title}>Лента</h1>
+      <Route
+        element={
+          <ProtectedRoute isAuth={isAuth}>
+            <Layout onLogout={logout} />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="/" element={<Navigate to="/feed" />} />
+        <Route path="/feed" element={<Feed />} />
+        <Route path="/shop" element={<Shop />} />
+        <Route path="/shop/:id" element={<ProductPages />} />
+        <Route path="/profile" element={<Profile />} />
+      </Route>
 
-          <LikeButton
-            isLiked={isLiked}
-            likesCount={likesCount}
-            onToggle={toggleLikeSafe}
-          />
-        </section>
-      )}
-
-      {tab === "shop" && (
-        <section className={styles.section}>
-          <h1 className={styles.title}>Магазин</h1>
-
-          <Search value={query} onChange={setQuery} />
-
-          <div className={styles.filters}>
-            <button onClick={() => setFilter("all")}>Все</button>
-            <button onClick={() => setFilter("inStock")}>В наличии</button>
-            <button onClick={() => setFilter("sale")}>Со скидкой</button>
-          </div>
-
-          {loading && <p>Загрузка...</p>}
-
-          <div className={styles.products}>
-            {!loading && visibleProducts.length === 0 && (
-              <p className={styles.empty}>Товары не найдены</p>
-            )}
-
-            {visibleProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onBuy={buyProduct}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {tab === "profile" && (
-        <section className={styles.section}>
-          <h1 className={styles.title}>Профиль</h1>
-          <p>Здесь будет информация о пользователе</p>
-        </section>
-      )}
-
-      {isModalOpen && (
-        <Modal title="Покупка товара" onClose={closeModal}>
-          <p>Спасибо за покупку!</p>
-          <button onClick={closeModal}>Закрыть</button>
-        </Modal>
-      )}
-    </div>
-  );
+      <Route path="*" element={<Navigate to="/login" />} />
+    </Routes>
+  )
 }
 
-export default App;
+export default App

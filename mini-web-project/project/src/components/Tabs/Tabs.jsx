@@ -1,30 +1,31 @@
-import styles from "./Tabs.module.css";
+import { NavLink } from "react-router-dom"
+import styles from "./Tabs.module.css"
 
-function Tabs({ value, onChange }) {
+function Tabs() {
   return (
     <div className={styles.tabs}>
-      <button
-        className={`${styles.tab} ${value === "feed" ? styles.active : ""}`}
-        onClick={() => onChange("feed")}
+      <NavLink
+        to="/feed"
+        className={({ isActive }) => (isActive ? styles.active : "")}
       >
         Лента
-      </button>
+      </NavLink>
 
-      <button
-        className={`${styles.tab} ${value === "shop" ? styles.active : ""}`}
-        onClick={() => onChange("shop")}
+      <NavLink
+        to="/shop"
+        className={({ isActive }) => (isActive ? styles.active : "")}
       >
         Магазин
-      </button>
+      </NavLink>
 
-      <button
-        className={`${styles.tab} ${value === "profile" ? styles.active : ""}`}
-        onClick={() => onChange("profile")}
+      <NavLink
+        to="/profile"
+        className={({ isActive }) => (isActive ? styles.active : "")}
       >
         Профиль
-      </button>
+      </NavLink>
     </div>
-  );
+  )
 }
 
-export default Tabs;
+export default Tabs

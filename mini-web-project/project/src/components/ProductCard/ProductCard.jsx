@@ -1,28 +1,18 @@
-import styles from "./ProductCard.module.css";
+import { useNavigate } from "react-router-dom"
 
-function ProductCard({ product, onBuy }) {
+function ProductCard({ product }) {
+  const navigate = useNavigate()
+
   return (
-    <div className={styles.card}>
-      <h3 className={styles.title}>{product.title}</h3>
-      <p className={styles.price}>${product.price}</p>
+    <div>
+      <h3>{product.title}</h3>
+      <p>Цена: {product.price}</p>
 
-      <p className={product.inStock ? styles.inStock : styles.outOfStock}>
-        {product.inStock ? "В наличии" : "Нет в наличии"}
-      </p>
-
-      <p className={product.sale ? styles.sale : styles.noSale}>
-        {product.sale ? "Скидка" : "Без скидки"}
-      </p>
-
-      <button
-        className={styles.button}
-        disabled={!product.inStock}
-        onClick={() => onBuy(product.id)}
-      >
-        Купить
+      <button onClick={() => navigate(`/shop/${product.id}`)}>
+        Подробнее
       </button>
     </div>
-  );
+  )
 }
 
-export default ProductCard;
+export default ProductCard
