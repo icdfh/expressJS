@@ -2,6 +2,12 @@ import { useParams } from "react-router-dom"
 import { fetchProducts } from "../data/products"
 import { useEffect, useState } from "react"
 
+function likeReducer(state, action){
+  switch(action.type){
+    case -> дальше прописать польностью логику лайков
+  }
+}
+
 function ProductPages() {
   const { id } = useParams()
   const [product, setProduct] = useState(null)
