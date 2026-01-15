@@ -1,11 +1,14 @@
-import { Navigate } from "react-router-dom"
+// src/components/ProtectedRoute.jsx
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
+import { selectIsAuth } from "../features/auth/authSlice";
 
-function ProtectedRoute({ isAuth, children }) {
-  if (!isAuth) {
-    return <Navigate to="/login" replace />
-  }
+function ProtectedRoute({ children }) {
+  const isAuth = useSelector(selectIsAuth);
 
-  return children
+  if (!isAuth) return <Navigate to="/login" replace />;
+
+  return children;
 }
 
-export default ProtectedRoute
+export default ProtectedRoute;

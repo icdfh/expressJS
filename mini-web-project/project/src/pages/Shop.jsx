@@ -1,35 +1,28 @@
-import { useEffect, useMemo, useReducer } from "react";
-import { fetchProducts } from "../data/products";
+// src/pages/Shop.jsx
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Search from "../components/Search/Search";
 import ProductCard from "../components/ProductCard/ProductCard";
 
-import { SHOP_INIT, shopReducer } from "./shopReducer";
+import { loadProducts, setQuery } from "../features/shop/shopSlice";
+import {
+  selectVisibleProducts,
+  selectLoading,
+  selectError,
+  selectQuery,
+} from "../features/shop/shopSelectors";
 
 function Shop() {
-  const [state, dispatch] = useReducer(shopReducer, SHOP_INIT);
+  const dispatch = useDispatch();
 
-  const { products, query, loading, error } = state;
+  const products = useSelector(selectVisibleProducts);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+  const query = useSelector(selectQuery);
 
   useEffect(() => {
-    dispatch({ type: "LOAD_START" });
-
-    fetchProducts()
-      .then((data) => {
-        dispatch({ type: "LOAD_SUCCESS", payload: data });
-      })
-      .catch((e) => {
-        dispatch({
-          type: "LOAD_ERROR",
-          payload: e.message,
-        });
-      });
-  }, []);
-
-  const visibleProducts = useMemo(() => {
-    return products.filter((p) =>
-      p.title.toLowerCase().includes(query.toLowerCase())
-    );
-  }, [products, query]);
+    dispatch(loadProducts());
+  }, [dispatch]);
 
   return (
     <>
@@ -37,15 +30,13 @@ function Shop() {
 
       <Search
         value={query}
-        onChange={(value) =>
-          dispatch({ type: "SET_QUERY", payload: value })
-        }
+        onChange={(value) => dispatch(setQuery(value))}
       />
 
       {loading && <p>Загрузка...</p>}
       {error && <p style={{ color: "crimson" }}>{error}</p>}
 
-      {visibleProducts.map((product) => (
+      {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
     </>

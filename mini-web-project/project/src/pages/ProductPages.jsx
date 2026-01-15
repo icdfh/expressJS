@@ -1,10 +1,17 @@
 import { useParams } from "react-router-dom"
 import { fetchProducts } from "../data/products"
 import { useEffect, useState } from "react"
+import LikeButton from "../components/LikeButton/LikeButton"
 
 function likeReducer(state, action){
   switch(action.type){
-    case -> дальше прописать польностью логику лайков
+    case "INIT":
+      return action.payload
+    case "TOGGLE":
+      return {...state, isLiked: !state.isLiked}
+      
+    default:
+      return state
   }
 }
 

@@ -1,43 +1,40 @@
-import { useState } from "react"
-import { Routes, Route, Navigate } from "react-router-dom"
+// src/App.jsx
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-import Login from "./pages/Login"
-import Feed from "./pages/Feed"
-import Shop from "./pages/Shop"
-import ProductPages from "./pages/ProductPages"
-import Profile from "./pages/Profile"
+import "./index.css";
+import Login from "./pages/Login";
+import Feed from "./pages/Feed";
+import Shop from "./pages/Shop";
+import ProductPages from "./pages/ProductPages";
+import Profile from "./pages/Profile";
 
-import ProtectedRoute from "./components/ProtectedRoute"
-import Layout from "./components/Layout"
+import ProtectedRoute from "./components/ProtectedRoute";
+import Layout from "./components/Layout";
+
+import { login, logout, selectIsAuth } from "./features/auth/authSlice";
 
 function App() {
-  const [isAuth, setIsAuth] = useState(
-    Boolean(localStorage.getItem("auth"))
-  )
-
-  function login() {
-    localStorage.setItem("auth", "true")
-    setIsAuth(true)
-  }
-
-  function logout() {
-    localStorage.removeItem("auth")
-    setIsAuth(false)
-  }
+  const dispatch = useDispatch();
+  const isAuth = useSelector(selectIsAuth);
 
   return (
     <Routes>
       <Route
         path="/login"
         element={
-          isAuth ? <Navigate to="/feed" /> : <Login onLogin={login} />
+          isAuth ? (
+            <Navigate to="/feed" />
+          ) : (
+            <Login onLogin={() => dispatch(login())} />
+          )
         }
       />
 
       <Route
         element={
-          <ProtectedRoute isAuth={isAuth}>
-            <Layout onLogout={logout} />
+          <ProtectedRoute>
+            <Layout onLogout={() => dispatch(logout())} />
           </ProtectedRoute>
         }
       >
@@ -50,7 +47,7 @@ function App() {
 
       <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;
